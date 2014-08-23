@@ -14,12 +14,18 @@ public class Enemy : MonoBehaviour
 	AudioClip m_deathSound;
 
 	[SerializeField]
+	GameObject m_deathPrefab;
+
+	[SerializeField]
 	HealthBar m_healthBar;
 
 	int m_initialHealth; 
 
+	AirshipController m_target;
+
 	void Awake()
 	{
+		m_target = GameObject.FindObjectOfType<AirshipController>();
 		m_initialHealth = m_health;
 	}
 
@@ -46,7 +52,14 @@ public class Enemy : MonoBehaviour
 
 	void OnDie()
 	{
+		GameObject go = Instantiate(m_deathPrefab, transform.position, Quaternion.identity) as GameObject;
 		AudioSource.PlayClipAtPoint(m_deathSound, transform.position);
 		Destroy(gameObject);
+		Destroy(go, 0.3f);
+	}
+
+	void Update()
+	{
+		rigidbody2D.MovePosition(Vector2.MoveTowards(transform.localPosition, m_target.transform.position, 0.01f));
 	}
 }
