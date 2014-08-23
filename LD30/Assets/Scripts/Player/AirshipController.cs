@@ -9,9 +9,11 @@ public class AirshipController : MonoBehaviour {
 	[SerializeField]
 	float m_health = 100f;
 
+	AirshipGun m_gun;
+	
 	void Awake()
 	{
-		
+		m_gun = GetComponent<AirshipGun>();
 	}
 
 	void Update()
@@ -19,11 +21,11 @@ public class AirshipController : MonoBehaviour {
 		float velocity = m_speed * Time.smoothDeltaTime;
 		Vector3 newPosition = transform.localPosition;
 
-		if(Input.GetKey("w")) newPosition.y += velocity;
-		else if(Input.GetKey("s")) newPosition.y -= velocity;
+		if(Input.GetKey(KeyCode.W)) newPosition.y += velocity;
+		else if(Input.GetKey(KeyCode.S)) newPosition.y -= velocity;
 
-		if(Input.GetKey("d")) newPosition.x += velocity;
-		else if(Input.GetKey("a")) newPosition.x -= velocity;
+		if(Input.GetKey(KeyCode.D)) newPosition.x += velocity;
+		else if(Input.GetKey(KeyCode.A)) newPosition.x -= velocity;
 
 		Vector3 move = (newPosition - transform.localPosition);
 		float mag = move.magnitude;
@@ -37,5 +39,7 @@ public class AirshipController : MonoBehaviour {
 			newPosition = transform.localPosition += (transform.up * velocity);
 			transform.localPosition = newPosition;
 		}
+
+		if(Input.GetKey(KeyCode.Space)) m_gun.Fire();
 	}
 }
