@@ -10,7 +10,17 @@ public class EnemySpawner : MonoBehaviour {
 	[SerializeField]
 	float m_spawnTimeoutMS  = 5000;
 
-	DateTime m_lastSpawn = DateTime.MinValue;
+	[SerializeField]
+	AudioClip m_dieSound; 
+
+	DateTime m_lastSpawn;
+	Animator m_anim;
+
+	void Awake()
+	{
+		m_lastSpawn = DateTime.UtcNow;
+		m_anim = GetComponent<Animator>();
+	}
 
 	void Update()
 	{
@@ -26,5 +36,12 @@ public class EnemySpawner : MonoBehaviour {
 	void Spawn()
 	{
 		GameObject go = Instantiate(m_prefab, transform.position, Quaternion.identity) as GameObject;
+	}
+
+	public void Remove()
+	{
+		AudioSource.PlayClipAtPoint(m_dieSound, transform.position);
+		m_anim.SetTrigger("Despawn");
+		Destroy(gameObject, 0.6f);
 	}
 }

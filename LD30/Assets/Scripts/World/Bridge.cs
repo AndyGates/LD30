@@ -1,8 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Bridge : MonoBehaviour {
+
+	[SerializeField]
+	GameObject m_bridgePart;
 
 	[SerializeField]
 	Island m_start;
@@ -10,8 +14,15 @@ public class Bridge : MonoBehaviour {
 	[SerializeField]
 	Island m_end;
 
-	[SerializeField]
-	GameObject m_bridgePart;
+	public Island StartIsland {
+		get { return m_start; }
+		set { m_start = value; }
+	}
+
+	public Island EndIsland {
+		get { return m_end; }
+		set { m_end = value; }
+	}
 
 	Dictionary<Vector2, BridgePart> m_placedParts = new Dictionary<Vector2, BridgePart>();
 
@@ -26,12 +37,17 @@ public class Bridge : MonoBehaviour {
 	Vector2 m_startDirection; 
 	Vector2 m_endDirection;
 
-	bool m_brigeComplete;
+	public Vector2 LastPosition {
+		get { return m_lastPosition; }
+		set { m_lastPosition = value; }
+	}
+
+	public Action OnBridgeComplete {get;set;}
 
 	// Use this for initialization
 	void Start () {
-		FindClosestPath();
-		StartCoroutine(BuildBridge());
+		//FindClosestPath();
+		//StartCoroutine(BuildBridge());
 	}
 	
 	// Update is called once per frame
@@ -39,7 +55,7 @@ public class Bridge : MonoBehaviour {
 	
 	}
 
-	void FindClosestPath()
+	public void FindClosestPath()
 	{
 		int startIndex = 0; 
 		int endIndex = 0;
@@ -70,19 +86,23 @@ public class Bridge : MonoBehaviour {
 		m_endDirection = end.right;
 	}
 
+	public void PlaceBridgePart()
+	{
+
+	}
+
 	IEnumerator BuildBridge()
 	{
-		Debug.Log(string.Format("{0} -> {1}", m_startPosition, m_endPosition));
+		//Debug.Log(string.Format("{0} -> {1}", m_startPosition, m_endPosition));
 
 		AddBridgePart(m_startPosition);
 		Vector2 startOffset = m_startDirection;
-		Debug.Log(startOffset);
 		AddBridgePart(m_lastPosition + startOffset); 
 
 		m_preEnd = (m_endPosition + m_endDirection);
 		while(!NearEnough(m_lastPosition, m_preEnd))
 		{
-			Debug.Log(string.Format("Last: {0} End: {1} Equals: {2}", m_lastPosition, m_preEnd, NearEnough(m_lastPosition, m_preEnd)));
+			//Debug.Log(string.Format("Last: {0} End: {1} Equals: {2}", m_lastPosition, m_preEnd, NearEnough(m_lastPosition, m_preEnd)));
 
 			Vector2 nextPosition = GetNextBuildPosition();
 			yield return new WaitForSeconds(1.0f);
@@ -96,6 +116,7 @@ public class Bridge : MonoBehaviour {
 	void AddLastBridgePart()
 	{
 		AddBridgePart(GetNextBuildPosition());
+		m_end.Capture();
 	}
 
 	Vector2 GetNextBuildPosition()
