@@ -13,11 +13,8 @@ public class HealthBar : MonoBehaviour {
 	[SerializeField]
 	Color m_emptyColour; 
 
-	float m_startWidth;
-
 	void Awake()
 	{
-		m_startWidth = m_image.rectTransform.localScale.x;
 		m_image.color = m_fullColour;
 	}
 	
