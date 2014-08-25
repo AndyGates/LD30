@@ -28,13 +28,16 @@ public class NPCBuilder : NPCBase {
 		if(NPCManager.Instance.CurrentIsland == null || NPCManager.Instance.CurrentIsland.ExitBridge == null)
 		{
 			GetNextBridge();
-			Debug.Log ("Builder got next bridge! " + CurrentBridge);
+			//Debug.Log ("Builder got next bridge! " + CurrentBridge);
 		}
 		else
 		{
 			m_followingBridge = true;
 			m_currentBridgeWaypoint = 0;
+			CurrentBridge = NPCManager.Instance.CurrentIsland.ExitBridge;
+			GetNextWaypoint();
 
+			/*
 			if(NPCManager.Instance.CurrentIsland.ExitBridge.IsFinished)
 			{
 				Debug.Log("Bridge finished, heading directly to island");
@@ -48,12 +51,24 @@ public class NPCBuilder : NPCBase {
 				m_target = CurrentBridge.LastPosition + m_offset;
 				Debug.Log(CurrentBridge.LastPosition);
 			}
+			*/
 		}
 	}
 
 	void GetNextWaypoint()
 	{
-		//m_target = CurrentBridge
+		Vector2 waypoint = CurrentBridge.GetWaypoint(m_currentBridgeWaypoint);
+		if(waypoint != Vector2.zero)
+		{
+			m_target = waypoint + m_offset;
+			m_currentBridgeWaypoint++;
+		}
+		else
+		{
+			//m_target = CurrentBridge.EndIsland.transform.position;
+			m_followingBridge = false;
+		}
+	
 	}
 
 	void GetNextBridge()
@@ -68,7 +83,7 @@ public class NPCBuilder : NPCBase {
 	public void OnBridgeComplete()
 	{
 		CurrentBridge.OnBridgeComplete -= OnBridgeComplete;
-		Debug.Log("BridgeComplete");
+		//Debug.Log("BridgeComplete");
 		//CurrentBridge = null;
 	}
 
@@ -101,10 +116,8 @@ public class NPCBuilder : NPCBase {
 		if(!CurrentBridge.IsFinished) m_target = CurrentBridge.LastPosition + m_offset;
 		else
 		{
-			Debug.Log ("Placed last part");
-			GetClosestIsland();
-			NPCManager.Instance.CurrentIsland = m_currentIsland;
-			m_target = m_currentIsland.transform.position;
+			//Debug.Log ("Placed last part");
+			m_target = m_currentIsland.ExitBridge.EndIsland.transform.position;
 		}
 	}
 	
@@ -113,8 +126,12 @@ public class NPCBuilder : NPCBase {
 		base.Update ();
 		if(AtTarget)
 		{
+			if(m_followingBridge)
+			{
+				GetNextWaypoint();
+			}
 			//If heading to somewhere on a bridge
-			if(!CurrentBridge.IsFinished)
+			else if(!CurrentBridge.IsFinished)
 			{
 				if(!m_building)
 				{
@@ -124,14 +141,15 @@ public class NPCBuilder : NPCBase {
 			}
 			else
 			{
-				Debug.Log("Got to end of finished bridge");
+				//Debug.Log("Got to end of finished bridge");
 				GetClosestIsland();
+				NPCManager.Instance.CurrentIsland = m_currentIsland;
 				if(OnReachedIsland != null) OnReachedIsland();
 
 				if(!m_currentIsland.IsFinal)
 				{
 					GetNextBridge();
-					Debug.Log("Builder now getting next bridge " + m_currentIsland + " " + CurrentBridge);
+					//Debug.Log("Builder now getting next bridge " + m_currentIsland + " " + CurrentBridge);
 
 				}
 				else

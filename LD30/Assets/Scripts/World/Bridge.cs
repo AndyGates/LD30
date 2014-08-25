@@ -24,7 +24,7 @@ public class Bridge : MonoBehaviour {
 		set { m_end = value; }
 	}
 
-	Dictionary<Vector2, BridgePart> m_placedParts = new Dictionary<Vector2, BridgePart>();
+	List<Vector2> m_placedParts = new List<Vector2>();
 
 	Vector2 m_lastPosition; 
 	BridgePart m_lastPart;
@@ -61,6 +61,12 @@ public class Bridge : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public Vector2 GetWaypoint(int index)
+	{
+		if(index >= m_placedParts.Count) return Vector2.zero;
+		else return m_placedParts[index];
 	}
 
 	public void FindClosestPath()
@@ -203,7 +209,7 @@ public class Bridge : MonoBehaviour {
 			m_lastPart.UpdateType();
 		}
 
-		if(!m_placedParts.ContainsKey(position))m_placedParts.Add(position, b);
+		if(!m_placedParts.Contains(position))m_placedParts.Add(position);
 		m_lastPart = b;
 		m_lastPosition = position;
 

@@ -1,15 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\NPC\NPCManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\World\Bridge.cs">
     <Files>
-      <File FileName="Assets\Scripts\World\Bridge.cs" Line="146" Column="3" />
-      <File FileName="Assets\Scripts\World\Island.cs" Line="58" Column="25" />
-      <File FileName="Assets\Scripts\NPC\NPCManager.cs" Line="126" Column="31" />
+      <File FileName="Assets\Scripts\World\Bridge.cs" Line="64" Column="3" />
+      <File FileName="Assets\Scripts\World\Island.cs" Line="72" Column="18" />
+      <File FileName="Assets\Scripts\NPC\NPCManager.cs" Line="97" Column="26" />
       <File FileName="Assets\Scripts\NPC\NPCIdle.cs" Line="28" Column="27" />
       <File FileName="Assets\Scripts\NPC\NPCBase.cs" Line="36" Column="37" />
-      <File FileName="Assets\Scripts\NPC\NPCBuilder.cs" Line="31" Column="25" />
-      <File FileName="Assets\Scripts\Enemy\EnemySpawner.cs" Line="27" Column="35" />
-      <File FileName="Assets\Scripts\Enemy\Enemy.cs" Line="74" Column="4" />
+      <File FileName="Assets\Scripts\NPC\NPCBuilder.cs" Line="132" Column="23" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

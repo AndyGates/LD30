@@ -93,8 +93,6 @@ public class NPCManager : SingletonBehaviour<NPCManager>
 		Builder.OnDeath += OnBuilderDeath;
 		Builder.OnReachedEnd += OnReachedEnd;
 		Builder.OnReachedIsland += OnReachedIsland;
-
-		Debug.Log(CurrentIsland);
 	}
 
 	public void OnBuilderDeath()
