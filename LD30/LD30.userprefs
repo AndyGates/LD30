@@ -1,13 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\NPC\NPCIdle.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\NPC\NPCManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\World\Bridge.cs" Line="99" Column="16" />
-      <File FileName="Assets\Scripts\World\Island.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\NPC\NPCBuilder.cs" Line="4" Column="42" />
-      <File FileName="Assets\Scripts\World\BridgePart.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\NPC\NPCManager.cs" Line="14" Column="1" />
-      <File FileName="Assets\Scripts\NPC\NPCIdle.cs" Line="6" Column="1" />
+      <File FileName="Assets\Scripts\World\Bridge.cs" Line="195" Column="4" />
+      <File FileName="Assets\Scripts\World\Island.cs" Line="58" Column="25" />
+      <File FileName="Assets\Scripts\NPC\NPCManager.cs" Line="47" Column="3" />
+      <File FileName="Assets\Scripts\NPC\NPCIdle.cs" Line="28" Column="27" />
+      <File FileName="Assets\Scripts\NPC\NPCBase.cs" Line="36" Column="37" />
+      <File FileName="Assets\Scripts\NPC\NPCBuilder.cs" Line="98" Column="52" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

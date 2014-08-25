@@ -19,14 +19,35 @@ public class Enemy : MonoBehaviour
 	[SerializeField]
 	HealthBar m_healthBar;
 
+	[SerializeField]
+	float m_speed = 0.01f;
+
 	int m_initialHealth; 
 
-	AirshipController m_target;
+	GameObject m_target;
 
 	void Awake()
 	{
-		m_target = GameObject.FindObjectOfType<AirshipController>();
+		//m_target = GameObject.FindObjectOfType<AirshipController>();
+		m_target = TryGetTarget();
 		m_initialHealth = m_health;
+	}
+
+	GameObject TryGetTarget()
+	{
+		GameObject target = null;
+
+		if(NPCManager.Instance.Builder != null)
+		{
+			target = NPCManager.Instance.Builder.gameObject;
+		}
+		else
+		{
+			Debug.Log("Could not find a builder");
+			target = FindObjectOfType<AirshipController>().gameObject;
+		}
+
+		return target;
 	}
 
 	void OnCollisionEnter2D(Collision2D col) 
@@ -60,6 +81,13 @@ public class Enemy : MonoBehaviour
 
 	void Update()
 	{
-		rigidbody2D.MovePosition(Vector2.MoveTowards(transform.localPosition, m_target.transform.position, 0.01f));
+		if(m_target != null)
+		{
+			rigidbody2D.MovePosition(Vector2.MoveTowards(transform.localPosition, m_target.transform.position, m_speed));
+		}
+		else
+		{
+			m_target = TryGetTarget();
+		}
 	}
 }

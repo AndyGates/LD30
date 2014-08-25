@@ -42,6 +42,11 @@ public class Bridge : MonoBehaviour {
 		set { m_lastPosition = value; }
 	}
 
+	public Vector2 StartPosition {
+		get { return m_startPosition; }
+		set { m_startPosition = value; }
+	}
+
 	public Action OnBridgeComplete {get;set;}
 
 	// Use this for initialization
@@ -84,11 +89,30 @@ public class Bridge : MonoBehaviour {
 
 		m_endPosition = end.position;
 		m_endDirection = end.right;
+
+		m_preEnd = (m_endPosition + m_endDirection);
 	}
 
 	public void PlaceBridgePart()
 	{
-
+		if(m_placedParts.Count == 0)
+		{
+			AddBridgePart(m_startPosition);
+		}
+		else if(m_placedParts.Count == 1)
+		{
+			Vector2 startOffset = m_startDirection;
+			AddBridgePart(m_lastPosition + startOffset); 
+		}
+		else if(NearEnough(m_lastPosition, m_preEnd))
+		{		
+			AddLastBridgePart();
+		}
+		else
+		{
+			Vector2 nextPosition = GetNextBuildPosition();
+			AddBridgePart(nextPosition);
+		}
 	}
 
 	IEnumerator BuildBridge()
@@ -117,6 +141,7 @@ public class Bridge : MonoBehaviour {
 	{
 		AddBridgePart(GetNextBuildPosition());
 		m_end.Capture();
+		if(OnBridgeComplete != null) OnBridgeComplete();
 	}
 
 	Vector2 GetNextBuildPosition()
@@ -172,7 +197,7 @@ public class Bridge : MonoBehaviour {
 			m_lastPart.UpdateType();
 		}
 
-		m_placedParts.Add(position, b);
+		if(!m_placedParts.ContainsKey(position))m_placedParts.Add(position, b);
 		m_lastPart = b;
 		m_lastPosition = position;
 

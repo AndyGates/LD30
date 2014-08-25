@@ -18,15 +18,16 @@ public class EnemySpawner : MonoBehaviour {
 
 	void Awake()
 	{
-		m_lastSpawn = DateTime.UtcNow;
+		m_lastSpawn = DateTime.MinValue;
 		m_anim = GetComponent<Animator>();
 	}
 
 	void Update()
 	{
 		DateTime curr = DateTime.UtcNow;
+		if(m_lastSpawn == DateTime.MinValue) m_lastSpawn = curr;
 
-		if((curr - m_lastSpawn).TotalMilliseconds > m_spawnTimeoutMS)
+		if(!NPCManager.Instance.StartScreen && (curr - m_lastSpawn).TotalMilliseconds > m_spawnTimeoutMS)
 		{
 			Spawn();
 			m_lastSpawn = curr;

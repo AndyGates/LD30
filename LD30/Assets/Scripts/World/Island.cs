@@ -30,6 +30,11 @@ public class Island : MonoBehaviour {
 	[SerializeField]
 	GameObject m_bridgePrefab;
 
+	[SerializeField]
+	bool m_isFinal; 
+
+	public bool IsFinal { get { return m_isFinal; } }
+
 	public Transform[] BridgePoints { get { return m_bridgePoints; } }
 
 	[SerializeField]

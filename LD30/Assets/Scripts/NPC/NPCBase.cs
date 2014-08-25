@@ -8,12 +8,34 @@ public class NPCBase : MonoBehaviour
  
 	protected Vector2 m_target;
 	protected Animator m_anim;
+	protected Vector2 m_offset = new Vector2(0, 0.4f);
+
+	protected bool AtTarget
+	{
+		get
+		{
+			return (Mathf.Approximately(transform.position.x, m_target.x) && Mathf.Approximately(transform.position.y, m_target.y));
+		}
+	}
 
 	protected virtual void Awake()
 	{
 		m_anim = GetComponent<Animator>();
-		m_target = transform.position;
+		Vector2 pos = transform.position;
+		m_target = pos + m_offset;
 		GetClosestIsland();
+	}
+
+	public void MoveToCurrentIsland()
+	{
+		if(NPCManager.Instance.CurrentIsland != null)
+		{
+			transform.position = NPCManager.Instance.CurrentIsland.transform.position;
+			GetClosestIsland();
+			transform.position = m_currentIsland.transform.position;
+			Vector2 pos = GetRandomPosition();
+			m_target = pos + m_offset;
+		}
 	}
 	
 	protected void GetClosestIsland()
@@ -41,7 +63,7 @@ public class NPCBase : MonoBehaviour
 	
 	protected virtual void Update()
 	{
-		if((!Mathf.Approximately(transform.position.x, m_target.x) || !Mathf.Approximately(transform.position.y, m_target.y))) 
+		if(!AtTarget) 
 		{
 			m_anim.SetBool("Walking", true);
 			transform.position = Vector2.MoveTowards(transform.position, m_target, 0.02f);
@@ -50,5 +72,15 @@ public class NPCBase : MonoBehaviour
 		{
 			m_anim.SetBool("Walking", false);
 		}
+	}
+
+	public Vector2 GetRandomPosition()
+	{
+		return RandomPositionInCollider(m_currentIslandCollider);
+	}
+	
+	protected Vector2 RandomPositionInCollider(Collider2D col)
+	{
+		return new Vector2(Random.Range(col.bounds.min.x, col.bounds.max.x), Random.Range(col.bounds.min.y, col.bounds.max.y));
 	}
 }

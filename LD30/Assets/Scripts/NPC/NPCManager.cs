@@ -3,31 +3,78 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
+using System;
 
 public class NPCManager : SingletonBehaviour<NPCManager> 
 {
 	[SerializeField]
 	Text m_text;
 
+	[SerializeField]
+	GameObject m_win; 
+
+	[SerializeField]
+	Text m_winText;
+
+	[SerializeField]
+	GameObject m_initialText;
+
+	[SerializeField]
+	GameObject m_lose;
+
 	public int NPCs { get;private set; }
 	public int MaxNPCs { get; private set; }
 
 	List<NPCIdle> m_npcs = new List<NPCIdle>(); 
 	public NPCBuilder Builder {get;set;}
+
 	public Bridge CurrentBridge {get;set;}
+	public Island CurrentIsland {get;set;}
+
+	public bool StartScreen { get { return m_startScreen; } }
+
+	bool m_startScreen = true;
+	bool m_gameOver = false;
+	DateTime m_gameOverTime; 
 
 	// Use this for initialization
 	void Start () 
 	{
+		Time.timeScale = 0;
+
 		m_npcs = GetComponentsInChildren<NPCIdle>().ToList();
 		MaxNPCs = m_npcs.Count;
 		NPCs = MaxNPCs;
+	}
+
+	void StartGame()
+	{
+		m_startScreen = false;
+		m_initialText.SetActive(false);
+		Time.timeScale = 1;
 		SpawnBuilder();
+	}
+
+	void Restart()
+	{
+		Application.LoadLevel("Main");
 	}
 
 	void UpdateText()
 	{
 		m_text.text = string.Format("PEOPLE REMAINING: {0}/{1}", MaxNPCs, NPCs); 
+	}
+
+	void Update()
+	{
+		if(m_startScreen && Input.anyKey)
+		{
+			StartGame();
+		}
+		else if(m_gameOver && (DateTime.UtcNow - m_gameOverTime).TotalSeconds > 3 && Input.anyKey)
+		{
+			Restart();
+		}
 	}
 		
 	public void SpawnBuilder()
@@ -40,15 +87,56 @@ public class NPCManager : SingletonBehaviour<NPCManager>
 
 		Builder = go.AddComponent<NPCBuilder>();
 		Builder.OnDeath += OnBuilderDeath;
+		Builder.OnReachedEnd += OnReachedEnd;
+		Builder.OnReachedIsland += OnReachedIsland;
+
+		Debug.Log(CurrentIsland);
 	}
 
 	public void OnBuilderDeath()
 	{
 		Builder.OnDeath -= OnBuilderDeath;
+		Builder.OnReachedEnd -= OnReachedEnd;
+		Builder.OnReachedIsland -= OnReachedIsland;
+
 		Destroy(Builder.gameObject, 0.6f);
 
 		NPCs--;
 		UpdateText();
-		SpawnBuilder();
+
+		if(NPCs > 0)
+		{
+			SpawnBuilder();
+		}
+		else
+		{
+			OnDied();
+		}
+	}
+
+	public void OnDied()
+	{
+		Time.timeScale = 0;
+		m_lose.SetActive(true);
+		m_gameOver = true;
+		m_gameOverTime = DateTime.UtcNow;
+	}
+
+	public void OnReachedEnd()
+	{
+		Builder.enabled = false;
+		Time.timeScale = 0;
+		m_winText.text = string.Format("You saved {0}/{1} people", NPCs, MaxNPCs);
+		m_win.SetActive(true);
+		m_gameOver = true;
+		m_gameOverTime = DateTime.UtcNow;
+	}
+
+	public void OnReachedIsland()
+	{
+		foreach(NPCIdle i in m_npcs)
+		{
+			i.MoveToCurrentIsland();
+		}
 	}
 }

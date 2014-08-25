@@ -29,12 +29,7 @@ public class NPCIdle : NPCBase
 		
 		while(m_target == Vector2.zero || !m_currentIslandCollider.OverlapPoint(m_target - new Vector2(0, collider2D.bounds.size.y / 2.0f)))
 		{
-			m_target = RandomPositionInCollider(m_currentIslandCollider);
+			m_target = GetRandomPosition() + m_offset;
 		}
-	}
-	
-	Vector2 RandomPositionInCollider(Collider2D col)
-	{
-		return new Vector2(Random.Range(col.bounds.min.x, col.bounds.max.x), Random.Range(col.bounds.min.y, col.bounds.max.y));
 	}
 }
