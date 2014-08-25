@@ -128,7 +128,16 @@ public class NPCManager : SingletonBehaviour<NPCManager>
 	public void OnReachedEnd()
 	{
 		Builder.enabled = false;
-		Time.timeScale = 0;
+		//Time.timeScale = 0;
+
+		Island[] allIslands = FindObjectsOfType<Island>();
+		foreach(Island i in allIslands)
+			i.Capture();
+
+		Enemy[] allEnemies = FindObjectsOfType<Enemy>();
+		foreach(Enemy e in allEnemies)
+			e.TakeDamage(2);
+
 		m_winText.text = string.Format("You saved {0}/{1} people", NPCs, MaxNPCs);
 		m_win.SetActive(true);
 		m_gameOver = true;

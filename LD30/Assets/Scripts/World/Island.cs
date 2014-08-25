@@ -33,6 +33,11 @@ public class Island : MonoBehaviour {
 	[SerializeField]
 	bool m_isFinal; 
 
+	[SerializeField]
+	bool m_isFirst; 
+
+	bool m_captured = false;
+	
 	public bool IsFinal { get { return m_isFinal; } }
 	public Bridge ExitBridge {get;set;}
 
@@ -44,8 +49,15 @@ public class Island : MonoBehaviour {
 	[SerializeField]
 	Island m_nextIsland; 
 
-	// Use this for initialization
-	void Start () 
+	[SerializeField]
+	Island[] m_islandsToActivate;
+	
+	void Start()
+	{
+		if(m_isFirst) Capture();
+	}
+
+	void Activate () 
 	{
 		foreach(AccessoryPoint ap in m_accessoryPoints)
 		{
@@ -75,11 +87,20 @@ public class Island : MonoBehaviour {
 
 	public void Capture()
 	{
-		StartCoroutine(CaptureIsland());
+		if(!m_captured)
+		{
+			m_captured = true;
+			StartCoroutine(CaptureIsland());
+		}
 	}
 
 	IEnumerator CaptureIsland()
 	{
+		foreach(Island i in m_islandsToActivate)
+		{
+			i.Activate();
+		}
+
 		foreach(EnemySpawner e in GetComponentsInChildren<EnemySpawner>())
 		{
 			e.Remove();
