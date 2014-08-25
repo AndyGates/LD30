@@ -12,6 +12,8 @@ public class NPCBuilder : NPCBase {
 
 	GameObject m_hat; 
 	bool m_building = false;
+	bool m_followingBridge = false;
+	int m_currentBridgeWaypoint = 0; 
 
 	protected override void Awake ()
 	{
@@ -23,16 +25,37 @@ public class NPCBuilder : NPCBase {
 		}
 		if(m_hat != null) m_hat.SetActive(true);
 
-		if(NPCManager.Instance.CurrentBridge == null) GetNextBridge();
+		if(NPCManager.Instance.CurrentIsland == null || NPCManager.Instance.CurrentIsland.ExitBridge == null)
+		{
+			GetNextBridge();
+			Debug.Log ("Builder got next bridge! " + CurrentBridge);
+		}
 		else
 		{
-			CurrentBridge = NPCManager.Instance.CurrentBridge;
-			m_target = CurrentBridge.LastPosition + m_offset;
-			Debug.Log(CurrentBridge.LastPosition);
-			m_building = false;
+			m_followingBridge = true;
+			m_currentBridgeWaypoint = 0;
+
+			if(NPCManager.Instance.CurrentIsland.ExitBridge.IsFinished)
+			{
+				Debug.Log("Bridge finished, heading directly to island");
+				m_target = NPCManager.Instance.CurrentIsland.ExitBridge.EndIsland.transform.position;
+			}
+			else
+			{
+				CurrentBridge = NPCManager.Instance.CurrentIsland.ExitBridge;
+				Debug.Log ("Builder got existing bridge! " + CurrentBridge);
+
+				m_target = CurrentBridge.LastPosition + m_offset;
+				Debug.Log(CurrentBridge.LastPosition);
+			}
 		}
 	}
-	
+
+	void GetNextWaypoint()
+	{
+		//m_target = CurrentBridge
+	}
+
 	void GetNextBridge()
 	{
 		CurrentBridge = m_currentIsland.CreateBridgeToNext();
@@ -40,24 +63,30 @@ public class NPCBuilder : NPCBase {
 		m_target = CurrentBridge.StartPosition + m_offset;
 		CurrentBridge.OnBridgeComplete += OnBridgeComplete;
 		NPCManager.Instance.CurrentIsland = m_currentIsland; 
-		NPCManager.Instance.CurrentBridge = CurrentBridge;
 	}
 
 	public void OnBridgeComplete()
 	{
 		CurrentBridge.OnBridgeComplete -= OnBridgeComplete;
-		CurrentBridge = null;
+		Debug.Log("BridgeComplete");
+		//CurrentBridge = null;
 	}
 
 	void OnTriggerEnter2D(Collider2D other) 
 	{
-		Debug.Log("Collision " + other.gameObject.name);
 		Enemy e = other.gameObject.GetComponent<Enemy>();
-		Debug.Log(e);
 		if(e != null)
 		{
 			m_anim.SetTrigger("Die");
 			if(OnDeath != null) OnDeath();
+
+			RaycastHit2D[] hits = Physics2D.CircleCastAll(e.transform.position, 3.0f, Vector2.one);
+			foreach(RaycastHit2D h in hits)
+			{
+				Enemy he = h.collider.gameObject.GetComponent<Enemy>();
+				if(he != null) he.TakeDamage(2);
+			}
+		
 			e.TakeDamage(2);
 		}
 	}	
@@ -69,9 +98,10 @@ public class NPCBuilder : NPCBase {
 		CurrentBridge.PlaceBridgePart();
 		m_building = false;
 
-		if(CurrentBridge != null) m_target = CurrentBridge.LastPosition + m_offset;
+		if(!CurrentBridge.IsFinished) m_target = CurrentBridge.LastPosition + m_offset;
 		else
 		{
+			Debug.Log ("Placed last part");
 			GetClosestIsland();
 			NPCManager.Instance.CurrentIsland = m_currentIsland;
 			m_target = m_currentIsland.transform.position;
@@ -83,7 +113,8 @@ public class NPCBuilder : NPCBase {
 		base.Update ();
 		if(AtTarget)
 		{
-			if(CurrentBridge != null)
+			//If heading to somewhere on a bridge
+			if(!CurrentBridge.IsFinished)
 			{
 				if(!m_building)
 				{
@@ -93,12 +124,15 @@ public class NPCBuilder : NPCBase {
 			}
 			else
 			{
+				Debug.Log("Got to end of finished bridge");
 				GetClosestIsland();
-				Debug.Log(m_currentIsland + " " + m_currentIsland.IsFinal);
+				if(OnReachedIsland != null) OnReachedIsland();
+
 				if(!m_currentIsland.IsFinal)
 				{
-					if(OnReachedIsland != null) OnReachedIsland();
 					GetNextBridge();
+					Debug.Log("Builder now getting next bridge " + m_currentIsland + " " + CurrentBridge);
+
 				}
 				else
 				{

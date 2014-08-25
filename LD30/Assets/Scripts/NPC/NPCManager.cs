@@ -28,7 +28,6 @@ public class NPCManager : SingletonBehaviour<NPCManager>
 	List<NPCIdle> m_npcs = new List<NPCIdle>(); 
 	public NPCBuilder Builder {get;set;}
 
-	public Bridge CurrentBridge {get;set;}
 	public Island CurrentIsland {get;set;}
 
 	public bool StartScreen { get { return m_startScreen; } }
@@ -42,13 +41,11 @@ public class NPCManager : SingletonBehaviour<NPCManager>
 	{
 		Time.timeScale = 0;
 
-		m_npcs = new List<NPCIdle>();
-		m_npcs.Add(GetComponentInChildren<NPCIdle>());
-
 		//Had to cut :(
-		//m_npcs = GetComponentsInChildren<NPCIdle>().ToList();
+		m_npcs = GetComponentsInChildren<NPCIdle>().ToList();
 
 		MaxNPCs = m_npcs.Count;
+		//MaxNPCs = 1;
 		NPCs = MaxNPCs;
 
 		UpdateText();
@@ -69,7 +66,7 @@ public class NPCManager : SingletonBehaviour<NPCManager>
 
 	void UpdateText()
 	{
-		m_text.text = string.Format("PEOPLE REMAINING: {0}/{1}", MaxNPCs, NPCs); 
+		m_text.text = string.Format("PEOPLE REMAINING: {0}/{1}", NPCs, MaxNPCs); 
 	}
 
 	void Update()

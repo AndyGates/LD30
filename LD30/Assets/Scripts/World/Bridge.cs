@@ -37,6 +37,8 @@ public class Bridge : MonoBehaviour {
 	Vector2 m_startDirection; 
 	Vector2 m_endDirection;
 
+	public bool IsFinished {get;set;}
+
 	public Vector2 LastPosition {
 		get { return m_lastPosition; }
 		set { m_lastPosition = value; }
@@ -53,6 +55,7 @@ public class Bridge : MonoBehaviour {
 	void Start () {
 		//FindClosestPath();
 		//StartCoroutine(BuildBridge());
+		IsFinished = false;
 	}
 	
 	// Update is called once per frame
@@ -115,6 +118,7 @@ public class Bridge : MonoBehaviour {
 		}
 	}
 
+	/*
 	IEnumerator BuildBridge()
 	{
 		//Debug.Log(string.Format("{0} -> {1}", m_startPosition, m_endPosition));
@@ -136,6 +140,7 @@ public class Bridge : MonoBehaviour {
 		yield return new WaitForSeconds(1.0f);
 		AddLastBridgePart();
 	}
+	*/
 
 	void AddLastBridgePart()
 	{
@@ -143,6 +148,7 @@ public class Bridge : MonoBehaviour {
 		m_end.Capture();
 		m_lastPosition = m_end.transform.position;
 		if(OnBridgeComplete != null) OnBridgeComplete();
+		IsFinished = true;
 	}
 
 	Vector2 GetNextBuildPosition()
@@ -157,7 +163,6 @@ public class Bridge : MonoBehaviour {
 		{
 			return m_lastPosition + new Vector2(0, diff.y > 0.1f ? 1 : -1);
 		}
-
 	}
 
 	void AddBridgePart(Vector2 position, float scale = 1.0f)

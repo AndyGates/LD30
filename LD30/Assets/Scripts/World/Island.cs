@@ -34,6 +34,7 @@ public class Island : MonoBehaviour {
 	bool m_isFinal; 
 
 	public bool IsFinal { get { return m_isFinal; } }
+	public Bridge ExitBridge {get;set;}
 
 	public Transform[] BridgePoints { get { return m_bridgePoints; } }
 
@@ -58,11 +59,12 @@ public class Island : MonoBehaviour {
 	public Bridge CreateBridgeToNext()
 	{
 		GameObject brGO = Instantiate(m_bridgePrefab) as GameObject;
-
+		brGO.name = gameObject.name + "Bridge"; 
 		Bridge br = brGO.GetComponent<Bridge>();
 		br.StartIsland = this;
 		br.EndIsland = m_nextIsland;
 		br.FindClosestPath();
+		ExitBridge = br;
 		return br;
 	}
 	
