@@ -141,6 +141,7 @@ public class Bridge : MonoBehaviour {
 	{
 		AddBridgePart(GetNextBuildPosition());
 		m_end.Capture();
+		m_lastPosition = m_end.transform.position;
 		if(OnBridgeComplete != null) OnBridgeComplete();
 	}
 

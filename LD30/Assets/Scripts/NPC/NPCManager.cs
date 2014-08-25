@@ -42,9 +42,16 @@ public class NPCManager : SingletonBehaviour<NPCManager>
 	{
 		Time.timeScale = 0;
 
-		m_npcs = GetComponentsInChildren<NPCIdle>().ToList();
+		m_npcs = new List<NPCIdle>();
+		m_npcs.Add(GetComponentInChildren<NPCIdle>());
+
+		//Had to cut :(
+		//m_npcs = GetComponentsInChildren<NPCIdle>().ToList();
+
 		MaxNPCs = m_npcs.Count;
 		NPCs = MaxNPCs;
+
+		UpdateText();
 	}
 
 	void StartGame()
@@ -116,6 +123,7 @@ public class NPCManager : SingletonBehaviour<NPCManager>
 
 	public void OnDied()
 	{
+		Destroy(Builder.gameObject);
 		Time.timeScale = 0;
 		m_lose.SetActive(true);
 		m_gameOver = true;

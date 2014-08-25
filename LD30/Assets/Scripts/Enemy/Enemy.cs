@@ -55,15 +55,20 @@ public class Enemy : MonoBehaviour
 		PlayerProjectile m_projectile = col.gameObject.GetComponent<PlayerProjectile>();
 		if(m_projectile != null)
 		{
-			m_health -= m_projectile.Damage;
 			Destroy(col.gameObject);
 			AudioSource.PlayClipAtPoint(m_hitSound, transform.position);
-			m_healthBar.SetHealth((float) m_health / (float) m_initialHealth);
+			TakeDamage(m_projectile.Damage);
 		}
 		else
 		{
 			m_health = 0;
 		}
+	}
+
+	public void TakeDamage(int damage)
+	{
+		m_health -= damage;
+		m_healthBar.SetHealth((float) m_health / (float) m_initialHealth);
 
 		if(m_health <= 0)
 		{

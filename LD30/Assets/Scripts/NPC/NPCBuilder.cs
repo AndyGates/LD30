@@ -27,7 +27,8 @@ public class NPCBuilder : NPCBase {
 		else
 		{
 			CurrentBridge = NPCManager.Instance.CurrentBridge;
-			m_target = CurrentBridge.LastPosition;
+			m_target = CurrentBridge.LastPosition + m_offset;
+			Debug.Log(CurrentBridge.LastPosition);
 			m_building = false;
 		}
 	}
@@ -57,6 +58,7 @@ public class NPCBuilder : NPCBase {
 		{
 			m_anim.SetTrigger("Die");
 			if(OnDeath != null) OnDeath();
+			e.TakeDamage(2);
 		}
 	}	
 
